@@ -16,6 +16,6 @@ pub mod anchor_vault {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        initialize::handler(ctx)
+        ctx.accounts.initialize(&ctx.bumps)
     }
 }
