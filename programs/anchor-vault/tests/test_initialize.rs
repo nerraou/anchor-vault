@@ -6,10 +6,10 @@ use {
     },
     litesvm::LiteSVM,
     solana_keypair::Keypair,
-    solana_message::{Message, VersionedMessage},
+    solana_message::Message,
     solana_pubkey::Pubkey,
     solana_signer::Signer,
-    solana_transaction::{versioned::VersionedTransaction, Transaction},
+    solana_transaction::Transaction,
 };
 
 fn setup() -> (LiteSVM, Keypair) {
@@ -97,68 +97,68 @@ fn test_initialize_deposit_withdraw_close() {
     assert_eq!(vault_balance_after_deposit, deposit_amount);
     msg!("Balance after deposit: {}", vault_balance_after_deposit);
 
-    //withdraw
-    // let withdraw_amount = 500_000_000;
+    // withdraw
+    let withdraw_amount = 500_000_000;
 
-    // let withdraw_ix = Instruction {
-    //     program_id: anchor_vault::id(),
-    //     accounts: anchor_vault::accounts::Withdraw {
-    //         user,
-    //         vault: vault_pda,
-    //         vault_state: vault_state_pda,
-    //         system_program: SYSTEM_PROGRAM_ID,
-    //     }
-    //     .to_account_metas(None),
-    //     data: anchor_vault::instruction::Withdraw {
-    //         amount: withdraw_amount,
-    //     }
-    //     .data(),
-    // };
+    let withdraw_ix = Instruction {
+        program_id: anchor_vault::id(),
+        accounts: anchor_vault::accounts::Withdraw {
+            user,
+            vault: vault_pda,
+            vault_state: vault_state_pda,
+            system_program: SYSTEM_PROGRAM_ID,
+        }
+        .to_account_metas(None),
+        data: anchor_vault::instruction::Withdraw {
+            amount: withdraw_amount,
+        }
+        .data(),
+    };
 
-    // let message = Message::new(&[withdraw_ix], Some(&payer.pubkey()));
-    // let recent_blockhash = svm.latest_blockhash();
-    // let transaction3 = Transaction::new(&[&payer], message, recent_blockhash);
+    let message = Message::new(&[withdraw_ix], Some(&payer.pubkey()));
+    let recent_blockhash = svm.latest_blockhash();
+    let transaction3 = Transaction::new(&[&payer], message, recent_blockhash);
 
-    // let tx3 = svm.send_transaction(transaction3).unwrap();
+    let tx3 = svm.send_transaction(transaction3).unwrap();
 
-    // msg!("Initialize transaction successfll");
-    // msg!("Transaction :{}", tx3.signature);
+    msg!("Initialize transaction successfll");
+    msg!("Transaction :{}", tx3.signature);
 
-    // let vault_balance_after_withdraw = svm.get_balance(&vault_pda).unwrap();
+    let vault_balance_after_withdraw = svm.get_balance(&vault_pda).unwrap();
 
-    // assert_eq!(vault_balance_after_withdraw, withdraw_amount);
-    // msg!("Balance after withdraw. : {}", vault_balance_after_withdraw);
+    assert_eq!(vault_balance_after_withdraw, withdraw_amount);
+    msg!("Balance after withdraw. : {}", vault_balance_after_withdraw);
 
-    // //Close
+    //Close
 
-    // let close_amount = svm.get_balance(&vault_pda).unwrap();
+    let close_amount = svm.get_balance(&vault_pda).unwrap();
 
-    // let close_ix = Instruction {
-    //     program_id: anchor_vault::id(),
-    //     accounts: anchor_vault::accounts::Close {
-    //         user,
-    //         vault: vault_pda,
-    //         vault_state: vault_state_pda,
-    //         system_program: SYSTEM_PROGRAM_ID,
-    //     }
-    //     .to_account_metas(None),
-    //     data: anchor_vault::instruction::Close {}.data(),
-    // };
+    let close_ix = Instruction {
+        program_id: anchor_vault::id(),
+        accounts: anchor_vault::accounts::Close {
+            user,
+            vault: vault_pda,
+            vault_state: vault_state_pda,
+            system_program: SYSTEM_PROGRAM_ID,
+        }
+        .to_account_metas(None),
+        data: anchor_vault::instruction::Close {}.data(),
+    };
 
-    // let message = Message::new(&[close_ix], Some(&payer.pubkey()));
-    // let recent_blockhash = svm.latest_blockhash();
-    // let transaction4 = Transaction::new(&[&payer], message, recent_blockhash);
+    let message = Message::new(&[close_ix], Some(&payer.pubkey()));
+    let recent_blockhash = svm.latest_blockhash();
+    let transaction4 = Transaction::new(&[&payer], message, recent_blockhash);
 
-    // let tx4 = svm.send_transaction(transaction4).unwrap();
+    let tx4 = svm.send_transaction(transaction4).unwrap();
 
-    // msg!("Initialize transaction successfll");
-    // msg!("Transaction :{}", tx4.signature);
+    msg!("Initialize transaction successfll");
+    msg!("Transaction :{}", tx4.signature);
 
-    // assert!(svm.get_account(&vault_pda).is_none());
-    // assert!(svm.get_account(&vault_state_pda).is_none());
+    assert!(svm.get_account(&vault_pda).is_none());
+    assert!(svm.get_account(&vault_state_pda).is_none());
 
-    // let user_balance_after_close = svm.get_balance(&user).unwrap();
+    let user_balance_after_close = svm.get_balance(&user).unwrap();
 
-    // assert!(user_balance_after_close > close_amount);
-    // msg!("Balance after close. : {}", user_balance_after_close);
+    assert!(user_balance_after_close > close_amount);
+    msg!("Balance after close. : {}", user_balance_after_close);
 }
